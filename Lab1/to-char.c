@@ -9,6 +9,7 @@ int main(void)
     int base = 0;
     char * toke = NULL;
     int value = 0;
+
     fgets(buffer, STRLEN, stdin);
 
     int res = sscanf(buffer, "%d", &base);
@@ -18,8 +19,8 @@ int main(void)
         printf("\nERROR. INVALID BASE.\n");
         return 0;
     }  
-    if (base == 8) {printf("octal input\n"); }
-    
+    if (base == 8) {printf("octal input\n"); }   
+
     if (base == 10) {printf("decimal input\n"); }
 
     if (base == 16) {printf("hex input\n"); }

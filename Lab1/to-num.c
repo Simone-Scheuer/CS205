@@ -6,38 +6,34 @@ const int STRLEN = 1024;
 int main(void)
 {
     char str[STRLEN] = {};
-    printf("\nEnter a string: ");
-    fgets(str, STRLEN, stdin);
-    int len = strlen(str) - 1;
+    while (fgets(str,STRLEN,stdin) != NULL)
+    {
 
-    printf("\n\nCharacter Output: \n");
+    int len = strlen(str) - 1;
+    printf("character output\n");
+
     for (int i = 0; i < len; i++)
     {
         printf("%c ",str[i]);
     }
-
-
-    printf("\n\nOctal Output: \n");
+    printf("\noctal output\n");
     for (int i = 0; i < len; i++)
     {
-        printf("0%o ",str[i]);
+        printf("%#04o ",str[i]);
     }
-
-
-    printf("\n\nDecimal Output: \n");
-    for (int i = 0; i < len; i++)
-
-    {
-        printf("%d ",str[i]);
-    }
-
-
-    printf("\n\nHex Output: \n");
+    printf("\ndecimal output\n");
     for (int i = 0; i < len; i++)
     {
-        printf("0x%x ",str[i]);
+        printf("%3d ",str[i]);
     }
-    printf("\n\n");
+    printf("\nhex output\n");
+    for (int i = 0; i < len; i++)
+    {
+        printf("%#04x ",str[i]);
+    }
+    printf("\n");
+    }
+
 
 return 0;
 }

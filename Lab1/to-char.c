@@ -5,59 +5,56 @@ const int STRLEN = 1024;
 
 int main(void)
 {
+    char buffer[STRLEN] = {};
     int base = 0;
-    char coded_message[STRLEN] = {};
-    char translated_message[STRLEN] = {};
+    char * toke = NULL;
+    int value = 0;
+    fgets(buffer, STRLEN, stdin);
 
-    printf("\nEnter a base to translate (8, 10, 16): ");
-    scanf("%d", &base);
-    while (getchar() != '\n');
+    int res = sscanf(buffer, "%d", &base);
 
-    if (base != 8 && base != 10 && base !=16)
+    if (res == 0)
     {
-        printf("\nINVALID BASE, TERMINATING PROGRAM.\n");
+        printf("\nERROR. INVALID BASE.\n");
         return 0;
-    }
+    }  
+    if (base == 8) {printf("octal input\n"); }
+    
+    if (base == 10) {printf("decimal input\n"); }
 
-    if (base == 8)
+    if (base == 16) {printf("hex input\n"); }
+
+    while (fgets(buffer, STRLEN, stdin) != NULL)
     {
-        printf("\nOctal Input: ");
-        fgets(coded_message, STRLEN, stdin);
-        int index = 0;
-        int translated_index = 0;
-        int octal = 0;
-        char temp[5] = {};
-        while(coded_message[index] != '\0')
+        toke = strtok(buffer, "\n\t ");
+        while (toke)
         {
-            if (coded_message[index] == '0' && coded_message[index + 1] == '0' && coded_message[index + 2] == '\0')
+            switch(base)
             {
-                temp[0] = 0;
-                temp[1] = 0;                                                                                                                                                      
-                temp[4] = '\0';
+                case 8:
+                    sscanf(toke, "%o", &value);
+                    break;
+
+                case 10:
+                    sscanf(toke, "%d", &value);
+                    break;
+
+                case 16:
+                    sscanf(toke, "%x", &value);
+                    break;
+
+                default:
+                    break;
             }
-            else
+            if (value != 0)
             {
-                for (int i = 0; i < 4; i++)
-                {
-                    temp[i] = coded_message[index + i];
-                }
+                printf("%c", value);
             }
-            int octal = strtol(temp, NULL, 8);
-            translated_message[translated_index] = (char)octal;
-            ++translated_index;
-            index += 5;
+            toke = strtok(NULL,"\n\t ");
+
         }
-
-    }
-    if (base == 10)
-    {
-        return 1;
-    }
-    if (base == 16)
-    {
-        return 1;
+        printf("\n");
     }
 
-    printf("\ntranslated message: %s", translated_message);
-    return 0;
+    return 1;
 }

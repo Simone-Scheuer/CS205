@@ -6,12 +6,13 @@ const int STRLEN = 1024;
 int main(void)
 {
     char str[STRLEN] = {};
+
     while (fgets(str,STRLEN,stdin) != NULL)
     {
 
     int len = strlen(str) - 1;
-    printf("character output\n");
 
+    printf("character output\n");
     for (int i = 0; i < len; i++)
     {
         printf("%c ",str[i]);
@@ -34,10 +35,5 @@ int main(void)
     printf("\n");
     }
 
-
 return 0;
 }
-
-
-
-

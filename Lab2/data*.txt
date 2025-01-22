@@ -1,0 +1,1 @@
+/u/rchaney/Classes/cs205/Labs/src/1000_digit/data*.txt

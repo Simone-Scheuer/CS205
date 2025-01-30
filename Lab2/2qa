@@ -13,12 +13,12 @@ int main(void)
     long int largest = 0;
     long int product = 0;
     char largest_hex[7] = {0};
-    int largest_index = 0;
+    int largest_index = 1;
     int num_digits = 0;
     char temphex[7] = {0}; //create a temphex big enough for 6 chars and a null terminator 
     int num_seq_hex = 0; //initate the index to track how many sequential hexes you have
-    char hex_char = ' ';
-    int hex_value = 0;
+
+
 
     while (fgets(buffer, STRLEN, stdin) != NULL) //continually read in
     {
@@ -45,26 +45,12 @@ int main(void)
                 if (num_seq_hex == 6) //IF YOU HAVE SIX
                 {
                     temphex[6] = '\0'; //set the SEVENTH POSITION, to the null terminator
-                    product = 1; //initialize the product calculator
-                    for (int z = 0; z < 6; z++) //MANUALLY CALCULATE THE PRODUCT BY TRAVERSING EACH CHAR
-                    {
-                        hex_value = 0; //set the char inital value to zero
-                        hex_char = temphex[z]; //set the temphex to the hex char to examine
-                        if (hex_char >= '0' && hex_char <= '9') //map it to the number if its a number
-                        {
-                            hex_value = hex_char - '0'; 
-                        }
-                        else if (hex_char >= 'A' && hex_char <= 'F') //otherwise map it to its respective letter
-                        {
-                            hex_value = hex_char - 'A' + 10;
-                        }
-                        product *= hex_value; //and multiply cummulitivelty
-                    }
+                    product = strtol(temphex, NULL, 16);
                     if (product > largest)
                     {
                         largest = product;
                         strcpy(largest_hex, temphex);
-                        largest_index = num_digits - 6;
+                        largest_index = num_digits - 5;
                     }
                 }
             }
@@ -72,7 +58,7 @@ int main(void)
         }
 
     }
-    printf("Greatest product of 6 consecutive digits: %ld", largest);
+    printf("\nGreatest product of 6 consecutive digits: %ld", largest);
     printf("\n  Found at index: %d", largest_index);
     printf("\n  Consisting of the string: %s", largest_hex);
     printf("\n  Digit count: %d", num_digits);

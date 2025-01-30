@@ -3,9 +3,9 @@ CC = gcc
 DEFINES = 
 DEBUG = -g3 -O0
 CFLAGS = -Wall -Wshadow -Wunreachable-code -Wredundant-decls \
-         -Wmissing-declarations -Wold-style-definition -Wmissing-prototypes \
-         -Wdeclaration-after-statement -Wextra -Werror -Wpedantic \
-         $(DEBUG) $(DEFINES)
+		 -Wmissing-declarations -Wold-style-definition -Wmissing-prototypes \
+		 -Wdeclaration-after-statement -Wextra -Werror -Wpedantic \
+		 $(DEBUG) $(DEFINES)
 
 TARGET = 1000-digit
 
@@ -19,6 +19,9 @@ $(TARGET): $(OBJ)
 
 $(OBJ): $(SRC)
 	$(CC) $(CFLAGS) -c $(SRC) -o $(OBJ)
+
+tar: 
+	tar -czf simones_Lab02.tar.gz 1000-digit.c Makefile
 
 clean:
 	rm -f $(TARGET) $(OBJ) *~ *.swp

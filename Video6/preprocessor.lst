@@ -1,0 +1,82 @@
+     1                                  extern printf
+     2                                  global main
+     3                                      
+     4                                      %define NULL 0
+     5                                      %define NL 10
+     6                                      %define TAB 9
+     7                                      %define EXIT_SUCCESS 0
+     8                                      %define ARRAY_SIZE 100
+     9                                  
+    10                                      %define HELLO_STR "Hello world!"
+    11                                      %strlen HELLO_LEN HELLO_STR
+    12                                  
+    13                                      %define DEBUG
+    14                                      %ifdef DEBUG
+    15                                          %macro CURR_LINE 1
+    16                                              push %1
+    17                                              push fmt_curr_line
+    18                                              call printf
+    19                                              add esp, 8
+    20                                          %endmacro
+    21                                      %else
+    22                                          %macro CURR_LINE 1
+    23                                          %endmacro
+    24                                      %endif 
+    25                                  
+    26                                  section .bss
+    27                                  section .data
+    28 00000000 00000000<rep 64h>           array: times ARRAY_SIZE dd 0
+    29                                  
+    30                                  section .rodata
+    31 00000000 5C7448656C6C6F2077-         fmt_bad: db "\tHello world!\n", NL, NULL
+    31 00000009 6F726C64215C6E0A00 
+    32 00000012 0948656C6C6F20776F-         fmt_good: db TAB, HELLO_STR, NL, NULL
+    32 0000001B 726C64210A00       
+    33 00000021 0948656C6C6F20776F-         fmt_len: db TAB, HELLO_STR, " %d", NL, NULL
+    33 0000002A 726C64212025640A00 
+    34 00000033 4445425547204C494E-         fmt_curr_line: db "DEBUG LINE: %d", NL, NULL
+    34 0000003C 453A2025640A00     
+    35                                  section .text
+    36                                  
+    37                                  main:
+    38 00000000 55                          push ebp
+    39 00000001 89E5                        mov ebp, esp
+    40                                  
+    41                                      CURR_LINE(__LINE__)
+    16 00000003 6A29                <1>  push %1
+    17 00000005 68[33000000]        <1>  push fmt_curr_line
+    18 0000000A E8(00000000)        <1>  call printf
+    19 0000000F 83C408              <1>  add esp, 8
+    42                                      
+    43 00000012 68[00000000]                push fmt_bad
+    44 00000017 E8(00000000)                call printf
+    45 0000001C 83C404                      add esp, 4
+    46                                  
+    47 0000001F 68[12000000]                push fmt_good
+    48 00000024 E8(00000000)                call printf
+    49 00000029 83C404                      add esp, 4
+    50                                  
+    51                                      CURR_LINE(__LINE__)
+    16 0000002C 6A33                <1>  push %1
+    17 0000002E 68[33000000]        <1>  push fmt_curr_line
+    18 00000033 E8(00000000)        <1>  call printf
+    19 00000038 83C408              <1>  add esp, 8
+    52                                  
+    53 0000003B 6A0C                        push HELLO_LEN
+    54 0000003D 68[21000000]                push fmt_len
+    55 00000042 E8(00000000)                call printf
+    56 00000047 83C408                      add esp, 8
+    57                                  
+    58                                      CURR_LINE(__LINE__)
+    16 0000004A 6A3A                <1>  push %1
+    17 0000004C 68[33000000]        <1>  push fmt_curr_line
+    18 00000051 E8(00000000)        <1>  call printf
+    19 00000056 83C408              <1>  add esp, 8
+    59                                  
+    60                                  
+    61 00000059 89EC                        mov esp, ebp
+    62 0000005B 5D                          pop ebp
+    63                                  
+    64 0000005C B800000000                  mov eax, EXIT_SUCCESS
+    65 00000061 C3                          ret
+    66                                  

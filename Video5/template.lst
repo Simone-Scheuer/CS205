@@ -1,0 +1,116 @@
+     1                                  extern printf
+     2                                  extern scanf
+     3                                  
+     4                                  global main
+     5                                  
+     6                                  section .bss
+     7 00000000 ????????                    result: resd 1
+     8 00000004 ????????                    num1: resd 1
+     9 00000008 ????????                    num2: resd 1
+    10 0000000C ????????                    symb: resd 1
+    11                                  
+    12                                  section .data
+    13 00000000 426173696320416464-         fmt_show_expression: db "Basic Addition and Subtraction Calculator.", 10, 0
+    13 00000009 6974696F6E20616E64-
+    13 00000012 205375627472616374-
+    13 0000001B 696F6E2043616C6375-
+    13 00000024 6C61746F722E0A00   
+    14 0000002C 596F75722045787072-         fmt_show_add: db "Your Expression %d = %d + %d", 10, 0
+    14 00000035 657373696F6E202564-
+    14 0000003E 203D202564202B2025-
+    14 00000047 640A00             
+    15 0000004A 596F75722045787072-         fmt_show_sub: db "Your Expression %d = %d - %d", 10, 0
+    15 00000053 657373696F6E202564-
+    15 0000005C 203D202564202D2025-
+    15 00000065 640A00             
+    16 00000068 456E74657220746865-         fmt_get_num1: db "Enter the value for num 1: ", 0
+    16 00000071 2076616C756520666F-
+    16 0000007A 72206E756D20313A20-
+    16 00000083 00                 
+    17 00000084 456E74657220746865-         fmt_get_num2: db "Enter the value for num 2: ", 0
+    17 0000008D 2076616C756520666F-
+    17 00000096 72206E756D20323A20-
+    17 0000009F 00                 
+    18 000000A0 456E74657220312074-         fmt_get_symb: db "Enter 1 to add, 0 to subtract: ", 0
+    18 000000A9 6F206164642C203020-
+    18 000000B2 746F20737562747261-
+    18 000000BB 63743A2000         
+    19 000000C0 256400                      fmt_get_val: db "%d", 0
+    20                                  
+    21                                  section .text
+    22                                  main:
+    23 00000000 55                          push ebp
+    24 00000001 89E5                        mov ebp, esp
+    25 00000003 83E4F0                      and esp, -16             ; Stack alignment to 16-byte boundary
+    26                                  
+    27                                      ; Print the welcome message
+    28 00000006 68[00000000]                push fmt_show_expression
+    29 0000000B E8(00000000)                call printf
+    30 00000010 83C404                      add esp, 4               ; Clean up stack after call
+    31                                  
+    32                                      ; Get input for num1
+    33 00000013 68[68000000]                push fmt_get_num1
+    34 00000018 E8(00000000)                call printf
+    35 0000001D 83C404                      add esp, 4
+    36 00000020 8D05[04000000]              lea eax, [num1]
+    37 00000026 50                          push eax
+    38 00000027 68[C0000000]                push fmt_get_val
+    39 0000002C E8(00000000)                call scanf
+    40 00000031 83C408                      add esp, 8               ; Clean up stack after call
+    41                                  
+    42                                      ; Get input for num2
+    43 00000034 68[84000000]                push fmt_get_num2
+    44 00000039 E8(00000000)                call printf
+    45 0000003E 83C404                      add esp, 4
+    46 00000041 8D05[08000000]              lea eax, [num2]
+    47 00000047 50                          push eax
+    48 00000048 68[C0000000]                push fmt_get_val
+    49 0000004D E8(00000000)                call scanf
+    50 00000052 83C408                      add esp, 8               ; Clean up stack after call
+    51                                  
+    52                                      ; Get input for symb
+    53 00000055 68[A0000000]                push fmt_get_symb
+    54 0000005A E8(00000000)                call printf
+    55 0000005F 83C404                      add esp, 4
+    56 00000062 8D05[0C000000]              lea eax, [symb]
+    57 00000068 50                          push eax
+    58 00000069 68[C0000000]                push fmt_get_val
+    59 0000006E E8(00000000)                call scanf
+    60 00000073 83C408                      add esp, 8               ; Clean up stack after call
+    61                                  
+    62                                      ; Check if symb is 1 (for addition)
+    63 00000076 A1[0C000000]                mov eax, [symb]
+    64 0000007B 83F801                      cmp eax, 1
+    65 0000007E 7531                        jne not_equal            ; Jump to subtraction if not equal to 1
+    66                                  
+    67                                      ; Addition operation
+    68 00000080 A1[04000000]                mov eax, [num1]
+    69 00000085 0305[08000000]              add eax, [num2]
+    70 0000008B A3[00000000]                mov [result], eax
+    71 00000090 FF35[08000000]              push dword [num2]
+    72 00000096 FF35[04000000]              push dword [num1]
+    73 0000009C FF35[00000000]              push dword [result]
+    74 000000A2 68[2C000000]                push fmt_show_add
+    75 000000A7 E8(00000000)                call printf
+    76 000000AC 83C410                      add esp, 16              ; Clean up stack after call
+    77 000000AF EB2F                        jmp done                 ; Skip the subtraction part
+    78                                  
+    79                                  not_equal:
+    80                                      ; Subtraction operation
+    81 000000B1 A1[04000000]                mov eax, [num1]
+    82 000000B6 2B05[08000000]              sub eax, [num2]
+    83 000000BC A3[00000000]                mov [result], eax
+    84 000000C1 FF35[08000000]              push dword [num2]
+    85 000000C7 FF35[04000000]              push dword [num1]
+    86 000000CD FF35[00000000]              push dword [result]
+    87 000000D3 68[4A000000]                push fmt_show_sub
+    88 000000D8 E8(00000000)                call printf
+    89 000000DD 83C410                      add esp, 16              ; Clean up stack after call
+    90                                  
+    91                                  done:
+    92                                      ; Return and clean up
+    93 000000E0 89EC                        mov esp, ebp
+    94 000000E2 5D                          pop ebp
+    95 000000E3 B800000000                  mov eax, 0
+    96 000000E8 C3                          ret
+    97                                  

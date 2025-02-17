@@ -1,0 +1,92 @@
+     1                                  
+     2                                  
+     3                                  extern printf ; Declare printf as external func for output
+     4                                  extern scanf ; Declare scanf as external func for input
+     5                                  global main ; Define main as entry point
+     6                                  
+     7                                  section .bss ; unitialized data section
+     8 00000000 ????????                    y: resd 1 ; reserve space for y (1 doubleword = 4 bytes)
+     9                                  
+    10                                  section .data ; read and write variables
+    11 00000000 00000000                    m: dd 0 ; define m as doubleword (4 bytes) initialized to zero
+    12 00000004 00000000                    x: dd 0 ; define x as doubleword initialized to zero
+    13 00000008 00000000                    b: dd 0
+    14                                  
+    15                                  section .rodata ; read only data (constant strings)
+    16 00000000 596F752077696C6C20-         fmt_show_expression: db "You will calculate the expression y = mx +b", 10, 0 
+    16 00000009 63616C63756C617465-
+    16 00000012 207468652065787072-
+    16 0000001B 657373696F6E207920-
+    16 00000024 3D206D78202B620A00 
+    17 0000002D 596F75722065787072-         fmt_show_result: db "Your expression %d = %d * %d + %d", 10, 0
+    17 00000036 657373696F6E202564-
+    17 0000003F 203D202564202A2025-
+    17 00000048 64202B2025640A00   
+    18 00000050 09456E746572207468-         fmt_get_m: db 9 , "Enter the value for m: ", 0
+    18 00000059 652076616C75652066-
+    18 00000062 6F72206D3A2000     
+    19 00000069 09456E746572207468-         fmt_get_x: db 9 , "Enter the value for x: ", 0
+    19 00000072 652076616C75652066-
+    19 0000007B 6F7220783A2000     
+    20 00000082 09456E746572207468-         fmt_get_b: db 9 , "Enter the value for b: ", 0
+    20 0000008B 652076616C75652066-
+    20 00000094 6F7220623A2000     
+    21 0000009B 256400                      fmt_get_value: db "%d", 0  ; format specifier for scanf (integer input)
+    22                                  
+    23                                  
+    24                                  section .text ; code section with executible instructions
+    25                                  
+    26                                  main: ; Code Section (contains executibles)
+    27                                  
+    28 00000000 55                          push ebp  ; save old base pointer (stack frame setup)
+    29 00000001 89E5                        mov ebp, esp ; set base pointer to current stack pointer
+    30                                  
+    31 00000003 68[00000000]                push fmt_show_expression ; push the addy of fmt_show onto the stack
+    32 00000008 E8(00000000)                call printf ; call printf to print presumably the top of the stack
+    33 0000000D 83C404                      add esp, 4 ; clean up the stack? one argument 4 bytes
+    34                                  
+    35 00000010 68[50000000]                push fmt_get_m ; push the prompt message for m
+    36 00000015 E8(00000000)                call printf ; print the prompt
+    37 0000001A 83C404                      add esp, 4 ; clean the stack
+    38                                  
+    39 0000001D 68[00000000]                push m ; push the adderess where scanf will store input
+    40 00000022 68[9B000000]                push fmt_get_value ; push the format specifier (%d)
+    41 00000027 E8(00000000)                call scanf ; call scanf on the top of the stack to populate m
+    42 0000002C 83C408                      add esp, 8 ; clean up stack (2 args, 8 bytes)
+    43                                  
+    44 0000002F 68[69000000]                push fmt_get_x
+    45 00000034 E8(00000000)                call printf
+    46 00000039 83C404                      add esp, 4
+    47                                  
+    48 0000003C 68[04000000]                push x
+    49 00000041 68[9B000000]                push fmt_get_value
+    50 00000046 E8(00000000)                call scanf
+    51 0000004B 83C408                      add esp, 8
+    52                                  
+    53 0000004E 68[82000000]                push fmt_get_b
+    54 00000053 E8(00000000)                call printf
+    55 00000058 83C404                      add esp, 4
+    56                                  
+    57 0000005B 68[08000000]                push b
+    58 00000060 68[9B000000]                push fmt_get_value
+    59 00000065 E8(00000000)                call scanf
+    60 0000006A 83C408                      add esp, 8
+    61                                  
+    62 0000006D A1[00000000]                mov eax, [ m ] ; load the value stored at addy m to eax
+    63 00000072 0FAF05[04000000]            imul eax, [ x ] ; multiply value stored at addy x to eax
+    64 00000079 0305[08000000]              add eax, [ b ] ; add value stored at addy b to eax
+    65 0000007F A3[00000000]                mov [ y ], eax ; move eax value into y
+    66                                  
+    67 00000084 FF35[08000000]              push dword [ b ] ; push results in backwards order so 
+    68 0000008A FF35[04000000]              push dword [ x ]
+    69 00000090 FF35[00000000]              push dword [ m ]
+    70 00000096 FF35[00000000]              push dword [ y ]
+    71 0000009C 68[2D000000]                push fmt_show_result ; this friggin guy can finsih this
+    72 000000A1 E8(00000000)                call printf ; call printf on the top of the stack
+    73 000000A6 83C414                      add esp, 20 ; clear all that space
+    74                                  
+    75 000000A9 89EC                        mov esp, ebp
+    76 000000AB 5D                          pop ebp
+    77                                  
+    78 000000AC B800000000                  mov eax, 0 ; return 0
+    79 000000B1 C3                          ret ; return from function

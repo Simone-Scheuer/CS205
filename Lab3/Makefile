@@ -25,7 +25,7 @@ view_long.o: view_long.c
 
 
 tar: 
-	tar -czf simones_Lab03.tar.gz Lab3.c Makefile
+	tar -czf simones_Lab03.tar.gz *.[ch] [mM]akefile
 
 clean:
 	rm -f $(EXECUS) *~ *.o \

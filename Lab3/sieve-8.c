@@ -4,7 +4,6 @@
 #include <stdbool.h>
 #include <string.h>
 #include <stdint.h>
-//horse
 
 void sieve(int n, char mode, char binary); //prototype
 
@@ -17,7 +16,7 @@ int main(int argc, char **argv) //argc lists the number of arguments, argvv is a
 
     while ((c = getopt(argc, argv, "pcu:bvh")) != -1) //parse argv for the guys were looking for
     {
-        switch(c) //switch on them
+        switch(c)
         {
             case 'p':
                 {
@@ -81,21 +80,21 @@ void sieve(int n, char mode, char binary)
             }
         }
     }
-    if (mode == 'p')
+    if (mode == 'p') // if you are in prime mode
     {
-        for (int p = 2; p <=n; p++)
+        for (int p = 2; p <=n; p++) //starting from two proceed
         {
-            mask = 1 << (p % 8);
-            if ((numbers[p / 8] & mask) == 0)
+            mask = 1 << (p % 8); //parse the bit position 
+            if ((numbers[p / 8] & mask) == 0) // if the mask is still false, its prime
             {
-                if (binary == 'y')
+                if (binary == 'y') //if binary mode is on
                 {
-                    unsigned long prime = (unsigned long)p;
-                    write(STDOUT_FILENO, &prime, sizeof(unsigned long));
+                    unsigned long prime = (unsigned long)p; //output in binary form
+                    write(STDOUT_FILENO, &prime, sizeof(unsigned long)); //write to default output in the binary form
                 }
                 else
                 {
-                    printf("%d\n", p);
+                    printf("%d\n", p); //otherwise if not in binary mode, just output it 
                 }
             }
         }
@@ -120,7 +119,4 @@ void sieve(int n, char mode, char binary)
         }
     }
     free(numbers);
-
 }
-
-

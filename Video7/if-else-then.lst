@@ -1,0 +1,133 @@
+     1                                  extern printf                                                                                                                                                                                                
+     2                                  global main
+     3                                  %define NULL 0
+     4                                  %define NL 10
+     5                                  %define EXIT_SUCCESS 0
+     6                                  
+     7                                  
+     8                                  section .bss
+     9                                  
+    10                                  section .data
+    11 00000000 05000000                a: dd 5
+    12 00000004 0A000000                b: dd 10
+    13 00000008 00000000                c: dd 0
+    14 0000000C 00000000                d: dd 0
+    15                                  
+    16                                  
+    17                                  section .rodata
+    18 00000000 6578616D706C653A20-     fmt1: db "example: %2d a = %2d b = %2d c = %2d", NL, NULL
+    18 00000009 2532642061203D2025-
+    18 00000012 32642062203D202532-
+    18 0000001B 642063203D20253264-
+    18 00000024 0A00               
+    19 00000026 6578616D706C653A20-     fmt2: db "example: %2d b = %2d eax = %2d c = %2d", NL, NULL
+    19 0000002F 2532642062203D2025-
+    19 00000038 326420656178203D20-
+    19 00000041 2532642063203D2025-
+    19 0000004A 32640A00           
+    20 0000004E 6578616D706C653A20-     fmt3: db "example: %2d a = %2d b = %2d d = %2d c = %2d", NL, NULL
+    20 00000057 2532642061203D2025-
+    20 00000060 32642062203D202532-
+    20 00000069 642064203D20253264-
+    20 00000072 2063203D202532640A-
+    20 0000007B 00                 
+    21                                  
+    22                                  section .text
+    23                                  
+    24                                  main:
+    25                                  
+    26 00000000 55                      push ebp
+    27 00000001 89E5                    mov ebp, esp
+    28                                  
+    29                                  example1:
+    30 00000003 A1[00000000]            mov eax, [a]
+    31 00000008 8B1D[04000000]          mov ebx, [b]
+    32 0000000E 39D8                    cmp eax, ebx
+    33 00000010 750C                    jne .false1
+    34 00000012 C705[08000000]0100-     mov dword [c], 1
+    34 0000001A 0000               
+    35 0000001C EB0A                    jmp .done1
+    36                                  
+    37                                  .false1:
+    38 0000001E C705[08000000]0000-     mov dword [c], 0
+    38 00000026 0000               
+    39                                  
+    40                                  .done1:
+    41 00000028 FF35[08000000]          push dword [c]
+    42 0000002E FF35[04000000]          push dword [b]
+    43 00000034 FF35[00000000]          push dword [a]
+    44 0000003A 6A01                    push dword 1
+    45 0000003C 68[00000000]            push dword fmt1
+    46 00000041 E8(00000000)            call printf
+    47 00000046 83C414                  add esp, 20
+    48                                  
+    49                                  example2:
+    50 00000049 A1[00000000]            mov eax, [a]
+    51 0000004E 8B1D[04000000]          mov ebx, [b]
+    52 00000054 39D8                    cmp eax, ebx
+    53 00000056 740C                    je .true2
+    54 00000058 C705[08000000]0000-     mov dword [c], 0
+    54 00000060 0000               
+    55 00000062 EB0A                    jmp .done2
+    56                                  
+    57                                  .true2:
+    58 00000064 C705[08000000]0100-     mov dword [c], 1
+    58 0000006C 0000               
+    59                                  
+    60                                  .done2:
+    61 0000006E FF35[08000000]          push dword [c]
+    62 00000074 FF35[04000000]          push dword [b]
+    63 0000007A FF35[00000000]          push dword [a]
+    64 00000080 6A02                    push dword 2
+    65 00000082 68[26000000]            push dword fmt2
+    66 00000087 E8(00000000)            call printf
+    67 0000008C 83C414                  add esp, 20
+    68                                  
+    69                                  example3:
+    70 0000008F A1[04000000]            mov eax, [ b ]
+    71 00000094 3B05[04000000]          cmp eax, [ b ]
+    72 0000009A 740C                    je .true3
+    73 0000009C C705[08000000]0000-     mov dword [ c ], 0
+    73 000000A4 0000               
+    74 000000A6 EB0A                    jmp .done3
+    75                                  .true3:
+    76 000000A8 C705[08000000]0100-     mov dword [ c ], 1
+    76 000000B0 0000               
+    77                                  .done3:
+    78 000000B2 FF35[08000000]          push dword [ c ]
+    79 000000B8 50                      push eax
+    80 000000B9 FF35[04000000]          push dword [ b ]
+    81 000000BF 6A03                    push dword 3 
+    82 000000C1 68[26000000]            push dword fmt2
+    83 000000C6 E8(00000000)            call printf
+    84 000000CB 83C414                  add esp, 20
+    85                                  
+    86                                  example4:
+    87 000000CE A1[00000000]            mov eax, [ a ]
+    88 000000D3 8B1D[04000000]          mov ebx, [ b ]
+    89 000000D9 39D8                    cmp eax, ebx
+    90 000000DB 7D16                    jge .false4
+    91 000000DD 8B1D[0C000000]          mov ebx, [ d ]
+    92 000000E3 39D8                    cmp eax, ebx
+    93 000000E5 7E0C                    jle .false4
+    94 000000E7 C705[08000000]0100-     mov dword [ c ], 1
+    94 000000EF 0000               
+    95 000000F1 EB0A                    jmp .done4
+    96                                  .false4:
+    97 000000F3 C705[08000000]0000-     mov dword [ c ], 0
+    97 000000FB 0000               
+    98                                  .done4:
+    99 000000FD FF35[08000000]          push dword [c]
+   100 00000103 FF35[0C000000]          push dword [d]
+   101 00000109 FF35[04000000]          push dword [b]
+   102 0000010F FF35[00000000]          push dword [a]
+   103 00000115 6A04                    push dword 4
+   104 00000117 68[4E000000]            push dword fmt3
+   105 0000011C E8(00000000)            call printf
+   106 00000121 83C418                  add esp, 24
+   107                                  
+   108 00000124 89EC                    mov esp, ebp
+   109 00000126 5D                      pop ebp
+   110 00000127 B800000000              mov eax, 0
+   111 0000012C C3                      ret
+   112                                  

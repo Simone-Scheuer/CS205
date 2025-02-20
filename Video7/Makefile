@@ -11,7 +11,7 @@ LDFLAGS = $(ARCH) $(PIE) $(STACK)
 ASFLAGS = -g -f elf32 -F dwarf
 
 PROG0 = template
-PROG1 = NASM-if-else-then
+PROG1 = if-else-then
 PROGS = $(PROG0) $(PROG1)
 
 all: $(PROGS)

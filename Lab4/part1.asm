@@ -7,10 +7,11 @@ global main
 %define NL 10
 %define EXIT_SUCCESS 0
 
+
 section .bss
+    array1: resw array1_size
 
 section .data
-    array1: resw array1_size
     index_val dd 0
     fmt1: db "Array Index: %2d Value: %2d", NL, NULL
     fmt2: db "EAX: %2d", NL, NULL
@@ -49,6 +50,7 @@ main:
     push dword fmt1
     call printf
     add esp, 12
+
     add edi, 1
     cmp edi, array1_size
     jl print

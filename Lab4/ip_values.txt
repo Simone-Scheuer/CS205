@@ -1,0 +1,4 @@
+	Seed = 
+	Array size = 
+	Mod = 
+

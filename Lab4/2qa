@@ -1,0 +1,173 @@
+extern printf
+extern scanf
+extern srand
+extern free
+extern malloc
+
+global main
+
+%define NULL 0
+%define array1_size 30
+%define NL 10
+%define TAB 9 
+%define EXIT_SUCCESS 0
+
+section .bss
+    array: resd 0
+
+section .data
+    index_val dd 0
+    fmt_int: db "%d", 0 
+    fmt0: db "array1:", TAB
+    fmt1: db "%d", TAB
+    fmt2: db "EAX: %2d", NL, NULL
+    ask1: db "Enter the number of elements in the array ", NULL
+    ask2: db "Enter the seed to use for rand() ", NULL
+    ask3: db "Enter the modulo to apply to the random numbers ", NULL
+    fmt3: db "array1: "
+    testing: db "Num_els: %d Rand_seed: %d Modulo: %d", NL, NULL
+
+    num_els dd 0
+    rand_seed dd 0
+    modulo dd 0
+
+section .rodata
+
+section .text
+
+main:
+    push ebp
+    mov ebp, esp
+
+    mov edi, 0  
+    mov eax, 0
+
+start:
+    push ask1 ;; Enter num of elements 
+    call printf
+    add esp, 4
+
+    lea eax,[ num_els ] 
+    push eax
+    push fmt_int
+    call scanf
+    add esp, 8
+    
+    cmp eax, 1
+    jne .invalid_array_size
+    cmp dword [num_els], 0
+    jg .valid_array_size
+
+    .invalid_array_size:
+    mov dword [num_els], 7
+
+    .valid_array_size: ;; Proceed to seed size
+    push ask2 
+    call printf
+    add esp, 4
+
+    lea eax,[ rand_seed ]
+    push eax
+    push fmt_int
+    call scanf
+    add esp, 8
+
+    cmp eax, 1
+    jne .invalid_seed_size
+    cmp dword [rand_seed], 0
+    jg .valid_seed_size
+
+    .invalid_seed_size:
+    mov dword [rand_seed], 5
+
+    .valid_seed_size: ;; Proceed to modulo
+    push ask3 
+    call printf
+    add esp, 4
+
+    lea eax,[ modulo ]
+    push eax
+    push fmt_int
+    call scanf
+    add esp, 8
+
+    cmp eax, 1
+    jle .invalid_modulo_size
+    cmp dword [modulo], 0
+    jg .valid_modulo_size
+
+    .invalid_modulo_size:
+    mov dword [modulo], 37
+
+    .valid_modulo_size: ;; Continue onwards
+    push dword [modulo]
+    push dword [rand_seed]
+    push dword [num_els]
+    push dword testing
+    call printf
+
+create_array:
+    mov eax, [num_els]
+    mov ebx, 4
+    mul ebx
+    
+    push eax
+    call malloc
+    add esp, 4
+
+    mov [array], eax
+
+    mov ebx, array ;; move array into ebx
+    mov edi, 0 
+    mov eax, 0
+
+
+assign:
+    mov ecx, num_els
+
+
+.loop:
+    push ecx
+    push edi
+
+    mov eax, [array]         
+    mov ebx, [eax + edi * 4]
+
+    ;; mod and random
+
+    inc edi
+    
+    pop edi
+    pop ecx
+
+    cmp edi, num_els
+    jge .loop
+
+    pop edi
+    pop ecx
+    
+print: 
+    push fmt0
+    call printf
+    add esp, 4
+
+    .loop:
+    mov eax, [ebx+edi * 4]
+
+    push dword eax
+    push dword fmt1
+    call printf
+
+    add esp, 8
+    inc edi
+
+    cmp edi, num_els - 1
+    jl .loop
+
+done:
+
+    mov esp, ebp
+    pop ebp
+
+    mov eax, 0
+    ret

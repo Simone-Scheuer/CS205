@@ -59,7 +59,7 @@ $(PROG4).o: $(PROG4).asm
 clean: 
 	rm -f $(PROGS) *.s *.o *.lst *~ \#*
 
-TAR_FILE = ${LOGNAME}_$(PROG1).tar.gz
+TAR_FILE = ${LOGNAME}_Lab4.tar.gz
 tar:
 	rm -f $(TAR_FILE)
 	tar cvaf $(TAR_FILE) *.asm [Mm]akefile

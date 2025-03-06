@@ -1,5 +1,0 @@
-0a1,4
-> Enter the number of elements in the array Enter the seed to use for rand() Enter the modulo to apply to the random numbers array1:     20      9      4     14     17     12     14      6     13      8      1      1     11      1      4      2      8     17     15      5     13     18      4     11     12      7      8 
-> array2:     13      2     20      1     20      6      5     12      2     16      3      6      8     10      7      9     19      6     12     19     12      8     14     16     19      9     18 
-> array2:     18      9     19     16     14      8     12     19     12      6     19      9      7     10      8      6      3     16      2     12      5      6     20      1     20      2     13  in reverse
-> array3:      8     18     17     14      4      9      7      9      5      2      3      6      4     10      7     18      5     18     12     11      9     18     14      8     18      0     18  array1 * array2 % 21

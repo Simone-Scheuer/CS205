@@ -177,12 +177,11 @@ print:
     jle .loop
 
 done:
-
     mov eax, [array]
     push eax
     call free
     add esp, 4    
-    
+ 
     mov esp, ebp
     pop ebp
 

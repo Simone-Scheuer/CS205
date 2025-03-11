@@ -1,0 +1,146 @@
+     1                                  extern printf
+     2                                  global main
+     3                                  extern printf
+     4                                  extern scanf
+     5                                  
+     6                                  %define SIZE 1023
+     7                                  %define NULL 0
+     8                                  %define NL 10
+     9                                  %define EXIT_SUCCESS 0
+    10                                  
+    11                                  section .bss
+    12 00000000 <res 3FFh>              user_input: resb SIZE
+    13 000003FF <res 3FFh>              rotated_array: resb SIZE
+    14                                  
+    15                                  section .data
+    16 00000000 00000000                rot_amount: dd 0
+    17                                  
+    18                                  section .rodata
+    19                                  
+    20                                  ;; CHAR SET INFO
+    21 00000000 202122232425262728-     char_set: db " !" , '"' ,"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~"
+    21 00000009 292A2B2C2D2E2F3031-
+    21 00000012 32333435363738393A-
+    21 0000001B 3B3C3D3E3F40414243-
+    21 00000024 4445464748494A4B4C-
+    21 0000002D 4D4E4F505152535455-
+    21 00000036 565758595A5B5C5D5E-
+    21 0000003F 5F6061626364656667-
+    21 00000048 68696A6B6C6D6E6F70-
+    21 00000051 717273747576777879-
+    21 0000005A 7A7B7C7D7E         
+    22                                  char_count: equ ($ - char_set)
+    23                                  
+    24                                  ;; READ FORMAT STATEMENTS
+    25 0000005F 456E74657220746865-     get_rot_amt: db "Enter the amount to rotate: ", NULL
+    25 00000068 20616D6F756E742074-
+    25 00000071 6F20726F746174653A-
+    25 0000007A 2000               
+    26 0000007C 456E74657220746865-     get_user_input: db "Enter the message to encrypt: ", NULL
+    26 00000085 206D65737361676520-
+    26 0000008E 746F20656E63727970-
+    26 00000097 743A2000           
+    27 0000009B 596F757220656E6372-     output: db "Your encrypted message: ", NULL
+    27 000000A4 7970746564206D6573-
+    27 000000AD 736167653A2000     
+    28                                  
+    29 000000B4 54686520726F746174-     rotten_rot_1: db "The rotate value must be between -94 and 94 (inclusive)", NL, NULL
+    29 000000BD 652076616C7565206D-
+    29 000000C6 757374206265206265-
+    29 000000CF 747765656E202D3934-
+    29 000000D8 20616E642039342028-
+    29 000000E1 696E636C7573697665-
+    29 000000EA 290A00             
+    30 000000ED 596F757220726F7461-     rotten_rot_2: db "Your rotate is rotten. Exiting...", NL, NULL
+    30 000000F6 746520697320726F74-
+    30 000000FF 74656E2E2045786974-
+    30 00000108 696E672E2E2E0A00   
+    31                                  
+    32                                  ;; SCANF STATEMENTS
+    33 00000110 0A255B5E0A5D7300        scanf_magic: db NL, "%[^",NL,"]s", NULL
+    34 00000118 256400                  fmt_int: db "%d", 0 
+    35                                  
+    36                                  section .text
+    37                                  
+    38                                  main:
+    39                                  
+    40 00000000 55                          push ebp
+    41 00000001 89E5                        mov ebp, esp
+    42                                  
+    43                                  read_data:
+    44                                  
+    45                                  .user_input:
+    46 00000003 68[7C000000]                push get_user_input
+    47 00000008 E8(00000000)                call printf
+    48 0000000D 83C404                      add esp, 4
+    49                                  
+    50 00000010 68[00000000]                push user_input
+    51 00000015 68[10010000]                push scanf_magic
+    52 0000001A E8(00000000)                call scanf
+    53 0000001F 83C408                      add esp, 8
+    54                                  
+    55                                  .rot_amount:
+    56 00000022 68[5F000000]                push get_rot_amt
+    57 00000027 E8(00000000)                call printf
+    58 0000002C 83C404                      add esp, 4
+    59                                  
+    60 0000002F 68[00000000]                push rot_amount
+    61 00000034 68[18010000]                push fmt_int
+    62 00000039 E8(00000000)                call scanf
+    63 0000003E 83C408                      add esp, 8
+    64                                  
+    65 00000041 833D[00000000]A2            cmp dword [rot_amount], -94
+    66 00000048 7C0B                        jl .rotten
+    67 0000004A 833D[00000000]5E            cmp dword [rot_amount], 94
+    68 00000051 7F02                        jg .rotten
+    69                                  
+    70 00000053 EB1C                        jmp .continue
+    71                                  
+    72                                      .rotten:
+    73 00000055 68[B4000000]                push rotten_rot_1
+    74 0000005A E8(00000000)                call printf
+    75 0000005F 83C404                      add esp, 4
+    76 00000062 68[ED000000]                push rotten_rot_2
+    77 00000067 E8(00000000)                call printf
+    78 0000006C 83C404                      add esp, 4
+    79 0000006F EB44                        jmp exit
+    80                                  
+    81                                  .continue:
+    82                                  
+    83                                  
+    84                                  .begin_rotation:
+    85 00000071 B8[00000000]                mov eax, user_input ;; USER ARRAY TRACKER REGISTER
+    86 00000076 BF00000000                  mov edi, 0 ;; USER ARRAY INDEX REGISTER
+    87                                  
+    88 0000007B BB[FF030000]                mov ebx, rotated_array ;; CHAR ARRAY TRACKER REGISTER
+    89 00000080 BE00000000                  mov esi, 0 ;; CHAR ARRAY INDEX REGISTER
+    90                                      
+    91                                      rotate:
+    92 00000085 833C3800                    cmp dword [eax + edi], 0
+    93 00000089 7410                        je .finished
+    94                                  
+    95 0000008B 8B0C38                      mov ecx, [eax + edi] 
+    96 0000008E 030D[00000000]              add ecx, [rot_amount]
+    97 00000094 890C33                      mov [ebx + esi], ecx
+    98 00000097 47                          inc edi
+    99 00000098 46                          inc esi
+   100 00000099 EBEA                        jmp rotate
+   101                                  
+   102                                  
+   103                                      .finished:
+   104 0000009B 68[9B000000]                push output
+   105 000000A0 E8(00000000)                call printf
+   106 000000A5 83C404                      add esp, 4
+   107                                  
+   108 000000A8 68[FF030000]                push rotated_array
+   109 000000AD E8(00000000)                call printf
+   110 000000B2 83C404                      add esp, 4
+   111                                  
+   112                                  exit:
+   113                                  
+   114 000000B5 89EC                        mov esp, ebp
+   115 000000B7 5D                          pop ebp
+   116                                  
+   117 000000B8 B800000000                  mov eax, 0
+   118 000000BD C3                          ret
+   119                                  
